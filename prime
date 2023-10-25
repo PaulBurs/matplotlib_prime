@@ -1,0 +1,201 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
+import math
+def foo(V, a, b, c):
+    return a * (V + b) + c
+f = np.loadtxt('laba1.3.2_p1.txt')
+
+m = []
+phi = []
+for s in f:
+    m.append(s[0]*9.815*0.1072/2/1000)
+    phi.append(s[1]/100)
+
+
+def foo(V, a, b, c):
+
+    return a * (V + b) + c
+
+sb = 0
+for i in range(len(m)):
+    if phi[i] > 0.01:
+        sb += math.fabs(((m[i]-100*9.815*0.1072/2/1000)/(phi[i]))**2 - 4.17**2)
+print((sb/36/35)**0.5)
+
+
+xerr = [i*0.01 for i in phi]
+yerr = [i/100 for i in m]
+
+fig, ax = plt.subplots()
+popt, pcop = curve_fit(foo, phi, m)
+plt.plot(phi, foo(phi, *popt), c='red')
+ax.errorbar(phi, m, yerr, xerr,  fmt='.', linewidth=2, capsize=6)
+
+plt.xlabel("Кручение нити в радианах")
+plt.ylabel("Момент сил в Н*м")
+
+plt.show()
+##################################################################33
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
+import math
+def foo(V, a, b, c):
+    return a * (V + b) + c
+f = np.loadtxt('laba1.3.2_p2.txt')
+
+T = []
+l = []
+for s in f:
+    T.append(s[0]**2)
+    l.append((s[1]/1000)**2)
+
+
+def foo(V, a, b, c):
+
+    return a * (V + b) + c
+
+sb = 0
+for i in range(len(l)):
+    sb += math.fabs(((T[i]/l[i] - 765)**2))
+print((sb/5/6)**0.5)
+
+
+
+xerr = [i/100 for i in l]
+yerr = [i/100 for i in T]
+
+fig, ax = plt.subplots()
+popt, pcop = curve_fit(foo, l, T)
+plt.plot(l, foo(l, *popt), c='red')
+ax.errorbar(l, T, yerr, xerr,  fmt='.', linewidth=2, capsize=6)
+
+plt.xlabel("Расстояние от стержня до грузов в м^2")
+plt.ylabel("Момент сил в (Н*м)^2")
+
+plt.show()
+#####################################################333
+
+import pandas as pd
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+import statistics
+
+f = np.loadtxt('laba1.1.3.txt')
+m = []
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot()
+
+
+for a in f:
+    for b in a:
+        m.append(b)
+
+
+
+
+
+mu, std = norm.fit(m)
+
+x = np.linspace(496.0, 505.0, 200)
+p = norm.pdf(x, mu, std)
+
+plt.plot(x, p, 'k', linewidth=2)
+
+ax.hist(m,20, density= True)
+ax.grid()
+
+plt.xticks(np.arange(496.0, 505.0, 0.8))
+
+plt.xlabel("Сопротивление резисторов, R в Ом")
+plt.ylabel("Плотность верятности")
+
+
+
+f = np.loadtxt('laba1.1.3.txt')
+m = []
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot()
+
+
+for a in f:
+    for b in a:
+        m.append(b)
+
+
+
+
+
+mu, std = norm.fit(m)
+
+x = np.linspace(496.0, 505.0, 200)
+p = norm.pdf(x, mu, std)
+
+plt.plot(x, p, 'k', linewidth=2)
+
+ax.hist(m,10, density= True)
+ax.grid()
+
+plt.xticks(np.arange(496.0, 505.0, 0.8))
+
+plt.xlabel("Сопротивление резисторов, R в Ом")
+plt.ylabel("Плотность верятности")
+
+plt.show()
+###################################################
+
+plot1 = plt.subplot()
+x = number[:-1]
+t = pi_vall_time[:-1]
+plot1.plot(x, t, label= "Формула Валлиса")
+plt.xlabel("Номер знака ")
+plt.ylabel("Количесвто времени для его достижения в с")
+plt.xticks(np.arange(0, max(x) + 1, 1))
+plt.yticks(np.arange(0, max(t) + 0.1, 0.05))
+
+x = number[:-1]
+t = pi_greg_leyn_time[:-1]
+plot1.plot(x, t, label= "Формула Грегора-Лейбница")
+plt.xlabel("Номер знака ")
+plt.ylabel("Количесвто времени для его достижения в с")
+
+
+x = number
+t = pi_xz_time
+plot1.plot(x, t, label= "Формула безымянная")
+plt.xlabel("Номер знака ")
+plt.ylabel("Количесвто времени для его достижения в с")
+plt.legend()
+plt.show()
+
+#######################################################3
+
+import numpy as np
+import matplotlib.pyplot as plt
+from textwrap import wrap
+
+data_array=np.loadtxt("data.txt",dtype=int)
+data_settings=np.loadtxt("settings.txt",dtype=float)
+data_time=np.linspace(0,data_settings[0],data_array.size)
+
+data_array=data_array*data_settings[1]
+fig,ax = plt.subplots(figsize=(16,12),dpi=100)
+ax.grid(which='major',color='k')
+ax.axis([data_array.min(),data_time.max()+1,data_array.min(),data_array.max()+0.2])
+ax.minorticks_on()
+ax.grid(which='minor',color='gray',linestyle=':')
+ax.plot(data_time,data_array,label="Зависимость напряжения от времени",color='purple',linewidth=1)
+ax.scatter(data_time[0:data_time.size:5],data_array[0:data_array.size:5],marker='s',c='blue',s=10)
+ax.set_title("/n".join(wrap('Процесс зарядки и разрядки конденсатора в RC цепи',60)),loc='center')
+ax.set_ylabel("напряжение,В")
+ax.set_xlabel("время,с")
+ax.legend()
+plt.rc('font', **{'family': 'Courier New'})
+plt.text(15.5,1.25, 'Время заряда: 13.2756 сек.' )
+plt.text(15.5,1.1, 'Время разряда: 10.7131 cек.' )
+plt.show()
+fig.savefig('graph.svg')
